@@ -84,3 +84,48 @@ sed  '/^$/d'  file
 
 案例三：服务器log处理
 sed  -n  '/Error/p'   log
+
+s:替换命令
+sed  's/false/true/'  passwd
+sed  's/:/%/'  passwd   只匹配第一个替换
+g:全局符号，替换标志
+
+案例四：获取网卡中的ip：
+ifconfig  eth0 | sed  -n  '/inet  /p' |sed    's/inet.*r://'  | sed  's/B.*$//'
+
+高级操作命令：
+
+｛｝：很多sed命令  ；号分开
+nl   passwd |sed ‘｛20，30d;s/false/true/｝’
+
+n：跳行
+nl  passwd |sed   -n   '{n,p}'   输出偶数行
+nl  passwd |sed   -n   '{p,n}'   输出奇数行
+
+nl  passwd |sed   -n   '{n,n,p}'   3，6，9
+
+&：替换固定字符串
+s/W/&123/   &代表W
+将用户名后增加空格：
+sed  ‘s/^[a-z_-]\+/&     /’     /etc/passwd
+
+案例五：大小写转换：将用户名的首字母转换为大写/小写
+（元字符 \u  \I ：首字母    \U   \L  一串：转换为大写/小写字符）
+sed  ‘s/^[a-z_-]\+/\u&/’     /etc/passwd
+
+将文件夹下的.txt文件名转换为大写
+ls  *.txt    |sed  's/\w\+/\U&/ 
+
+案例六：数据筛选
+获取passwd中  USER、UID和GID
+
+sed  's/\(^[a-z_-]\+\):.*$/\1/'   passwd
+sed  's/\(^[a-z_-]\+\):x:\([0-9]\+\):.*$/\1    \2/'   passwd
+sed  's/\(^[a-z_-]\+\):x:\([0-9]\+\):\([0-9]\+\):.*$/USER:\1    UID:\2       GID\3/'   passwd
+
+替换命令：s/w1w2w3/w2/   前面&的替换是一个整体性的替换    不能替换成部分  
+想要替换：  s/w1\(w2\)w3/\1/，将前面的括起来就可以了
+
+案例七：获取ip
+ifconfig  eth0 | sed   -n   '/inet /p'  | sed 's/ine.*r:\([0-9.]\+\) .*$/\1/'
+
