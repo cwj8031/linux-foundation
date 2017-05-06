@@ -85,3 +85,38 @@
 
 	awk -F  ':'  '$3>100{print $1,$3}'  passwd   取出$3 大于100 的用户名 UID 
 
+
+10.扩展格式
+
+	awk  [options]  'command'  file(s)
+
+	command2扩展：
+		BEGIN{print “start”}pattern{commands}END{print "end"}
+
+	案例一：
+	制表显示/etc/passwd  每行的行号，每行的列数，对应行的用户名
+		awk  -F  ":"  'BEGIN{print "Line  Col  User"}{print NR,NF,$1}END{print "-------"FILENAME"-------"}'     passwd
+	
+
+11.awk处理过程
+
+	案例一：
+	统计当前文件夹下的文件/文件夹占用的大小
+
+	ls -l |awk  'BEGIN{size=0}{size+=$5}END{print "size  is"   size/1024/1024"M"}'
+
+	案例二：
+	统计显示/etc/passwd的账户总人数
+
+	awk  -F ':'   'BEGIN{count=0}$1!~/^$/{count++}END{print "count =" count}' passwd
+
+	统计显示UID大于100的用户名
+
+	awk   -F ':'  'BEGIN{count=0}{if ($3>100) name[count++]=$1}END{for (i=0;i<count;i++) print i,name[i]}'  passwd
+
+	统计netstat -anp 状态下为LISTEN和CONNECTED的连接数量
+
+	netstat   -anp |awk '$6~/CONNECTED|LISTEN/{sum[$6]++}END{for (i in sum) print i,sum[i]}'
+
+
+
