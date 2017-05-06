@@ -1,0 +1,49 @@
+1、回忆grep知识点
+	单个字符
+	字符串
+	元字符
+
+	词首词尾锚定
+	行首行尾锚定
+
+	转义
+	贪婪模式
+2、练习
+	1、显示/etc/passwd文件中不以/bin/bash结尾的行；
+    	~]# grep -v "/bin/bash$" /etc/passwd
+
+	2、找出/etc/passwd文件中的两位数或三位数；
+    	~]# grep  "\<[0-9]\{2,3\}\>"  /etc/passwd
+
+	3、找出/etc/rc.d/rc.sysinit或/etc/grub2.cfg文件中，
+		以至少一个空白字符开头，且后面非空白字符的行；
+    	~]# grep  "^[[:space:]]\+[^[:space:]]"  /etc/grub2.cfg
+
+	4、找出"netstat -tan"命令的结果中以'LISTEN'后跟0、1或多个空白字符结尾的行；
+    	~]# netstat -tan | grep  "LISTEN[[:space:]]*$"
+
+	1、找出/proc/meminfo文件中，所有以大写或小写S开头的行；至少有三种实现方式；
+    	~]# grep -i "^s" /proc/meminfo
+    	~]# grep "^[sS]" /proc/meminfo
+    	~]# grep -E "^(s|S)" /proc/meminfo
+
+	2、显示肖前系统上root、centos或user1用户的相关信息；
+    	~]# grep -E "^(root|centos|user1)\>" /etc/passwd
+
+	3、找出/etc/rc.d/init.d/functions文件中某单词后面跟一个小括号的行；
+    	~]# grep  -E  -o  "[_[:alnum:]]+\(\)"  /etc/rc.d/init.d/functions
+
+	4、使用echo命令输出一绝对路径，使用egrep取出基名；
+    	~]# echo /etc/sysconfig/ | grep  -E  -o  "[^/]+/?$"
+
+    	进一步：取出其路径名；类似于对其执行dirname命令的结果；
+        ~]# echo /etc/sysconfig/ | egrep -o "^/.*[^/]" | egrep -o "^/.*/" | egrep -o  "^.*[^/]"
+        ~]#echo /etc/sysconfig/ | egrep -o "^/.*(/[[:alnum:]])" | egrep -o "^/.*/" | egrep -o  "^.*[^/]"
+	5、找出ifconfig命令结果中的1-255之间的数值；
+    	~]# ifconfig | grep  -E  -o  "\<([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\>"
+
+	6、课外作业：找出ifconfig命令结果中的IP地址；
+
+	7、添加用户bash, testbash, basher以及nologin(其shell为/sbin/nologin)；
+	而后找出/etc/passwd文件中用户名同shell名的行；
+    	~]# grep  -E  "^([^:]+\>).*\1$"  /etc/passwd
