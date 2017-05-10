@@ -1,0 +1,9 @@
+1、ssh端口改变
+
+	vi /etc/ssh/sshd_config
+
+2、设置en.US  dpkg-reconfigure locales
+
+3、设置UTC    dpkg-reconfigure tzdata
+
+
